@@ -1,0 +1,80 @@
+services:
+  - type: web
+    name: campus-api-gateway
+    runtime: docker
+    dockerContext: ./api-gateway
+    dockerfilePath: ./api-gateway/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: GATEWAY_PORT
+        value: 10000
+      - key: USER_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campus-user-service
+          property: hostport
+      - key: PRODUCT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campus-product-service
+          property: hostport
+      - key: ORDER_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campus-order-service
+          property: hostport
+
+  - type: pserv
+    name: campus-user-service
+    runtime: docker
+    dockerContext: ./user-service
+    dockerfilePath: ./user-service/Dockerfile
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: USER_SERVICE_PORT
+        value: 3001
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: campusconnect
+
+  - type: pserv
+    name: campus-product-service
+    runtime: docker
+    dockerContext: ./product-service
+    dockerfilePath: ./product-service/Dockerfile
+    envVars:
+      - key: PORT
+        value: 3002
+      - key: PRODUCT_SERVICE_PORT
+        value: 3002
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: campusconnect
+
+  - type: pserv
+    name: campus-order-service
+    runtime: docker
+    dockerContext: ./order-service
+    dockerfilePath: ./order-service/Dockerfile
+    envVars:
+      - key: PORT
+        value: 3003
+      - key: ORDER_SERVICE_PORT
+        value: 3003
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: campusconnect
+      - key: USER_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campus-user-service
+          property: hostport
+      - key: PRODUCT_SERVICE_URL
+        fromService:
+          type: pserv
+          name: campus-product-service
+          property: hostport

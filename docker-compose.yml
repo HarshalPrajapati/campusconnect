@@ -1,0 +1,82 @@
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: campus-api-gateway
+    ports:
+      - "3000:3000"           # Only the gateway is exposed externally
+    environment:
+      - GATEWAY_PORT=3000
+      - USER_SERVICE_URL=${USER_SERVICE_URL:-http://user-service:3001}
+      - PRODUCT_SERVICE_URL=${PRODUCT_SERVICE_URL:-http://product-service:3002}
+      - ORDER_SERVICE_URL=${ORDER_SERVICE_URL:-http://order-service:3003}
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+    networks:
+      - campus-network
+    restart: unless-stopped
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: campus-user-service
+    # No "ports" exposed — only accessible inside Docker network
+    environment:
+      - PORT=${USER_SERVICE_PORT:-3001}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT:-3001}
+      - MONGODB_URI=${MONGODB_URI:?Set MONGODB_URI in .env}
+      - MONGODB_DB=${MONGODB_DB:-campusconnect}
+    networks:
+      - campus-network
+    restart: unless-stopped
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: campus-product-service
+    # No "ports" exposed — only accessible inside Docker network
+    environment:
+      - PORT=${PRODUCT_SERVICE_PORT:-3002}
+      - PRODUCT_SERVICE_PORT=${PRODUCT_SERVICE_PORT:-3002}
+      - MONGODB_URI=${MONGODB_URI:?Set MONGODB_URI in .env}
+      - MONGODB_DB=${MONGODB_DB:-campusconnect}
+    networks:
+      - campus-network
+    restart: unless-stopped
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: campus-order-service
+    # No "ports" exposed — only accessible inside Docker network
+    environment:
+      - PORT=${ORDER_SERVICE_PORT:-3003}
+      - ORDER_SERVICE_PORT=${ORDER_SERVICE_PORT:-3003}
+      - USER_SERVICE_URL=${USER_SERVICE_URL:-http://user-service:3001}
+      - PRODUCT_SERVICE_URL=${PRODUCT_SERVICE_URL:-http://product-service:3002}
+      - REQUEST_TIMEOUT_MS=4000
+      - MONGODB_URI=${MONGODB_URI:?Set MONGODB_URI in .env}
+      - MONGODB_DB=${MONGODB_DB:-campusconnect}
+    depends_on:
+      - user-service
+      - product-service
+    networks:
+      - campus-network
+  mongodb:
+    image: mongo:latest
+    container_name: campus-mongodb
+    # No external ports exposed - only accessible inside campus-network
+    networks:
+      - campus-network
+    restart: unless-stopped
+
+networks:
+  campus-network:
+    name: campus-network
+    driver: bridge

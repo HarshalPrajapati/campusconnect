@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Lab 7 - API Gateway and Service Discovery",
+    "description": "Run against localhost by setting baseUrl to http://localhost:3000, or use the public Render gateway URL. For the unavailable-service request, stop user-service first.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "userId", "value": "101" },
+    { "key": "productId", "value": "501" },
+    { "key": "orderId", "value": "1001" }
+  ],
+  "item": [
+    { "name": "Gateway Health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+    {
+      "name": "Users",
+      "item": [
+        { "name": "List users", "request": { "method": "GET", "url": "{{baseUrl}}/users" } },
+        { "name": "Get user", "request": { "method": "GET", "url": "{{baseUrl}}/users/{{userId}}" } },
+        { "name": "Create user", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test-user@example.com\",\n  \"role\": \"Student\"\n}" }, "url": "{{baseUrl}}/users" } },
+        { "name": "Update user", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"role\": \"Faculty\"\n}" }, "url": "{{baseUrl}}/users/{{userId}}" } },
+        { "name": "Delete user", "request": { "method": "DELETE", "url": "{{baseUrl}}/users/{{userId}}" } }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        { "name": "List products", "request": { "method": "GET", "url": "{{baseUrl}}/products" } },
+        { "name": "Get product", "request": { "method": "GET", "url": "{{baseUrl}}/products/{{productId}}" } },
+        { "name": "Create product", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test Product\",\n  \"price\": 9.99,\n  \"category\": \"Lab\",\n  \"stock\": 10\n}" }, "url": "{{baseUrl}}/products" } },
+        { "name": "Update product", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"stock\": 12\n}" }, "url": "{{baseUrl}}/products/{{productId}}" } },
+        { "name": "Delete product", "request": { "method": "DELETE", "url": "{{baseUrl}}/products/{{productId}}" } }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        { "name": "List orders", "request": { "method": "GET", "url": "{{baseUrl}}/orders" } },
+        { "name": "Get order", "request": { "method": "GET", "url": "{{baseUrl}}/orders/{{orderId}}" } },
+        { "name": "Create order", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"userId\": 101,\n  \"productId\": 501,\n  \"quantity\": 2\n}" }, "url": "{{baseUrl}}/orders" } },
+        { "name": "Delete order", "request": { "method": "DELETE", "url": "{{baseUrl}}/orders/{{orderId}}" } }
+      ]
+    },
+    {
+      "name": "Gateway unavailable-service check (stop user-service first)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/users" }
+    }
+  ]
+}
