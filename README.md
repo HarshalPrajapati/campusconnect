@@ -701,22 +701,22 @@ The following evidence should be included with the submission:
 
 Add screenshots here if required:
 
-``` text
-### Postman Gateway Tests
-[Insert screenshot]
-
 ### Gateway Health Check
-[Insert screenshot]
+![Gateway Health Check](screenshots/gateway-health.png)
 
-### 502/503 Error Test
-[Insert screenshot]
+### Postman Gateway Tests (Users, Products, Orders)
+![User Service Request](screenshots/gateway-users.png)
+![Product Service Request](screenshots/gateway-products.png)
+![Order Service Request](screenshots/gateway-orders.png)
 
-### Cloud Deployment
-[Insert screenshot]
+### 502/503 Unavailable Service Error Test
+![502/503 Error Test](screenshots/gateway-unavailable-service.png)
 
-### Public Gateway Test
-[Insert screenshot]
-```
+### Cloud Deployment (Render Dashboard)
+![Cloud Deployment](screenshots/render-deployment.png)
+
+### Public Gateway Tests (Cloud URL)
+![Public Gateway Test](screenshots/public-gateway-tests.png)
 
 ------------------------------------------------------------------------
 
@@ -787,9 +787,9 @@ development environment.
 
 ### Evidence
 
--   [ ] Gateway routing screenshots
--   [ ] `/health` screenshot
--   [ ] `502/503` test screenshot
+-   [x] Gateway routing screenshots
+-   [x] `/health` screenshot
+-   [x] `502/503` test screenshot
 -   [ ] Cloud deployment screenshot
 -   [ ] Public URL test screenshot
 -   [x] Updated README
